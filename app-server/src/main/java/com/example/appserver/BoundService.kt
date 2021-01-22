@@ -7,6 +7,7 @@ import android.util.Log
 import com.example.aidl.*
 import com.example.aidl.base.AidlException
 import com.example.aidl.base.AidlResult
+import com.example.aidl.callback.AsyncCallback
 import com.example.aidl.models.Sum
 
 class BoundService : Service() {
