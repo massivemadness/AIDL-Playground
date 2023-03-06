@@ -38,13 +38,11 @@ class MainActivity : AppCompatActivity() {
 
     private var calculator: Calculator? = null
 
-    private lateinit var button: Button
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        button = findViewById(R.id.textView)
+        val button = findViewById<Button>(R.id.textView)
         button.setOnClickListener {
             calculator?.sum(2, 2, object : AsyncCallback.Stub() {
                 override fun onSuccess(aidlResult: AidlResult<*>?) {

@@ -3,6 +3,7 @@ package com.example.appserver
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.os.RemoteException
 import android.util.Log
 import com.example.aidl.*
 import com.example.aidl.base.AidlException
@@ -22,12 +23,18 @@ class BoundService : Service() {
                 try {
                     val sum = Sum(first + second)
                     val aidlResult = AidlResult(sum)
-                    Thread.sleep(2000) // TODO вынести в другой поток
+                    Thread.sleep(2000) // симулируем задержку
+                    // throw RuntimeException("Невозможно вычислить результат")
                     callback?.onSuccess(aidlResult)
                 } catch (e: Throwable) {
                     Log.e(TAG, e.message, e)
-                    if (e is RuntimeException) {
-                        val aidlException = AidlException(e.message, AidlException.ARITHMETIC_EXCEPTION)
+                    if (e !is RemoteException) {
+                        val errorCode = when (e) {
+                            is ArithmeticException -> AidlException.ARITHMETIC_EXCEPTION
+                            is RuntimeException -> AidlException.RUNTIME_EXCEPTION
+                            else -> AidlException.RUNTIME_EXCEPTION
+                        }
+                        val aidlException = AidlException(e.message, errorCode)
                         callback?.onError(aidlException)
                     }
                 }
